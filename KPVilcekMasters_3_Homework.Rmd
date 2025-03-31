@@ -1,0 +1,125 @@
+---
+title: "Masters Homework 3"
+author: "Katie Papciak"
+date: "7/28/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Use a for loop to find mean and standard deviation of A1C, Lead, HDL, GlucoseSI, Creatine, Glucose and LDL Estimate. Print the names as well. 
+
+```{r}
+library(dplyr)
+nyc <- read.csv("https://raw.githubusercontent.com/fredlapolla/RVilcekMaster23/master/NYC_HANES_DIAB.csv")
+columns_of_interest <- c("A1C", "LEAD", "HDL", "GLUCOSESI", "CREATININE", "GLUCOSE", "LDLESTIMATE")
+for (column in columns_of_interest) 
+  {
+    mean_value <- mean(nyc[[column]], na.rm = T)
+    std_dev_value <- sd(nyc[[column]], na.rm = T)
+    print(cat(column, ": Mean =", mean_value, ", Standard Deviation =", std_dev_value, "\n"))
+}
+```
+
+Create a vector to put the results of the previous loop into to store them
+
+```{r}
+std_dev_and_mean <- list()
+for (column in columns_of_interest) 
+  {
+    mean_value <- mean(nyc[[column]], na.rm = T)
+    std_dev_value <- sd(nyc[[column]], na.rm = T)
+    std_dev_and_mean[[column]] <- list(mean = mean_value, std_dev = std_dev_value)
+}
+```
+
+Use ifelse to create a three level variable for normal, borderline and high ldl (< 130 = normla, 130-159 = borderline, and >160 = high per medline.gov)
+
+```{r}
+nyc$LDL_category <- ifelse(nyc$LDLESTIMATE < 130, "normal", ifelse(nyc$LDLESTIMATE >= 130 & nyc$LDLESTIMATE <= 159, "borderline", "high"))
+print(head(nyc[, c("LDLESTIMATE", "LDL_category")]))
+```
+
+Use by() to find the average cholsterol level by hsq_1 status:
+
+```{r}
+average_cholesterol_by_hsq_1 <- by(nyc$CHOLESTEROLTOTAL, nyc$HSQ_1, FUN = function(x) mean(x, na.rm = TRUE))
+```
+
+
+
+>- Subset to only have females (gender == "Female")
+
+```{r}
+nyc_females <- subset(nyc, GENDER == "FEMALE")
+average_female_cholesterol_by_hsq_1 <- with(nyc_females, by(CHOLESTEROLTOTAL, HSQ_1, FUN = function(x) mean(x, na.rm = TRUE)))
+# When I load the data into r, it only reads 1 or 2 for gender. 
+```
+
+
+
+
+>- Create a subset of males and find the median total cholesterol level
+
+```{r}
+nyc_males <- subset(nyc, GENDER == "MALE")
+median_male_cholesterol_by_hsq_1 <- with(nyc_males, by(CHOLESTEROLTOTAL, HSQ_1, FUN = function(x) median(x, na.rm = TRUE)))
+# When I load the data into r, it only reads 1 or 2 for gender. 
+```
+
+
+>- Try to create a summary of the mean A1C using two factors, GENDER and DX_DBTS
+
+```{r}
+summary_mean_a1c <- aggregate(A1C ~ GENDER + DX_DBTS, data = nyc, FUN = mean, na.rm = TRUE)
+```
+
+Find the class of the first three columns of data. What are they?
+
+```{r}
+column_types <- sapply(nyc[, 1:3], class)
+```
+
+How does R treat blank values?
+
+What command can be used to identify where NAs are located in a column?
+
+```{r}
+is.na(nyc[ ,1:3])
+```
+
+
+How can you use indexing to create a subset without any NAs?
+
+```{r}
+#a1c_no_na <- nyc[!is.na(nyc$A1C), ] example to create a subset of a1c w/o nas
+```
+
+How could you delete a column of data, for example, the 5th 
+```{r}
+#nyc <- nyc[, -5]
+```
+
+
+What command would let you find a set of text in the cells of a column?
+
+```{r}
+#grep
+```
+
+
+Rename the HSQ1 variable to Health_Status
+
+```{r}
+colnames(nyc)[5] <- "Health_Status"
+```
+
+Explore the Mutate command and create a ratio of total cholesterol divided by HDL
+
+```{r}
+nyc <- nyc %>% mutate(Cholesterol_HDL_Ratio = CHOLESTEROLTOTAL/ HDL)
+```
+
+

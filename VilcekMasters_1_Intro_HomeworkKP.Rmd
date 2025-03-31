@@ -1,0 +1,90 @@
+---
+title: "Homework1"
+author: "Katie Papciak"
+date: "7/9/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Homework 1
+
+```{r, echo = TRUE}
+
+nyc <- read.csv("https://raw.githubusercontent.com/fredlapolla/RVilcekMaster23/master/NYC_HANES_DIAB.csv")
+nycdf<-data.frame(nyc)
+
+```
+
+>- Create a list of numbers 1 to 100 and name this list FirstHundred
+
+```{r}
+FirstHundred<-list(1:100)
+print(FirstHundred)
+```
+
+>- On your own, explore nyc and find the median and mean Cadmium levels`
+
+```{r}
+print(mean(nycdf$CADMIUM, na.rm = TRUE))
+print(median(nycdf$CADMIUM, na.rm = TRUE))
+```
+
+
+>- Find summary information about the total blood mercury levels in our NYC HANES data (hint: names(nyc) will call the names of each column). What is the max value, what is the minimum value.  
+
+```{r}
+print(summary(nycdf$MERCURYTOTALBLOOD))
+```
+
+>- Bonus/Challenge: What is the Standard Deviation and skewness of the blood mercury?
+
+```{r}
+sd_merc<- sd(nycdf$MERCURYTOTALBLOOD, na.rm = TRUE)
+install.packages("moments")
+library(moments)
+skewness(nycdf$MERCURYTOTALBLOOD, na.rm= TRUE)
+```
+
+
+>- Install a package and load, such as "ggplot2" or "dplyr"
+
+```{r}
+install.packages("ggplot2")
+library("ggplot2")
+install.packages("dplyr")
+library("dplyr")
+
+```
+
+
+>- What is a directory? How can you look up the current directory in which you are working in R?
+
+```{r}
+# A directory is the organization and hierarchy of files stored on your computer. A working directory in R is the current location where R saves and pulls files from your computer. 
+getwd()
+```
+
+
+>- How does one read in a CSV file of data into R?
+
+```{r}
+# read.csv(file, header = TRUE, sep = ",", comment.char = "", ...) 
+```
+
+>- What two commands are needed to install and use a package in R?
+
+```{r}
+# install.packages()
+# library()
+```
+
+>- What are reasons one would choose to use R for data analysis?
+
+```{r}
+# 1. Free!
+# 2. Well known language that is similar to other common languages (C++, python, Java) with large user community.
+# 3. Nice/customizable  data visualization and graphics packages available to public
+```

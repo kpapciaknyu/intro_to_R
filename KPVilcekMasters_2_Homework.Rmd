@@ -1,0 +1,166 @@
+---
+title: "Masters Homework 2"
+author: "Katie Papciak"
+date: "7/16/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## On Your Own Work
+
+>- When you read in a .csv file into R, what class is the object that you read in (like nyc)?
+
+"data.frame"
+
+>- What command can you use to determine what type of data is in a column?
+
+```{r}
+nyc <- read.csv("https://raw.githubusercontent.com/fredlapolla/RVilcekMaster23/master/NYC_HANES_DIAB.csv")
+class(nyc$SPAGE) # class(df$column)
+```
+
+
+>- Provide a command to find the type of data in the DX_DBTS column of nyc. 
+
+```{r}
+class(nyc$DX_DBTS)
+```
+
+
+>- Provide the same command the type of data but use the other way of indexing from what you did above. 
+
+```{r}
+class(nyc['DX_DBTS'])
+```
+
+
+
+>- What would happen if we had chosen the first 4 columns of NYC HANES and made a matrix? What would the class of the cells in this matrix be? Why?
+
+```{r}
+nyc_new<-data.frame(nyc$KEY,nyc$GENDER,nyc$SPAGE,nyc$AGEGROUP)
+class(nyc_new)
+# It would still be a data frame because there is still a rectangular array of numbers with rows and columns, only difference is this matrix has less columns than the original "nyc" and only consist of "integer" columns.
+
+```
+
+
+>- If we make a vector,vec<- c(3,9,4,7,8,9), and multiply it by WannaMatrix, what is the value in the third row, third column? 
+
+```{r}
+WannaMatrix <- nyc[5:10, 6:9]
+WannaMatrix <- as.matrix(WannaMatrix,nrow = 6, ncol = 4)
+
+print(WannaMatrix[3,3])
+
+
+```
+
+
+
+>- What happens if instead we made a vector vec2 <- c(3,9,4,7,8) and multiply it by WannaMatrix, what is the third row, third column value? What is going on? 
+
+```{r}
+vec2 <- c(3,9,4,7,8)
+vec2*WannaMatrix
+# R wasn't able to run the code because there is a difference in length of vectors between the two
+length(vec2)
+length(WannaMatrix)
+```
+
+
+>- Look up the arguments for read.csv
+
+```{r}
+?read.csv
+# read.csv(file, header = TRUE, sep = ",", quote = "\"", dec = ".", fill = TRUE, comment.char = "", ...)
+```
+
+
+>- Use apply() to find the median value of CADMIUM, LEAD CHOLESTEROLTOTAL, GLUCOSESI, CREATININESI, and CREATININE
+
+```{r}
+apply(nyc[c('CADMIUM', 'LEAD','CHOLESTEROLTOTAL', 'GLUCOSESI', 'CREATININESI','CREATININE')], 2, median, na.rm = T)
+```
+
+
+>- Do the same using sapply()
+
+```{r}
+sapply(nyc[c('CADMIUM', 'LEAD','CHOLESTEROLTOTAL', 'GLUCOSESI', 'CREATININESI','CREATININE')], median, na.rm = T)
+```
+
+
+>- Use a for loop to find the median value of columns 16:19
+
+```{r}
+column_indices <- c(16:19)
+medians <- numeric(length(column_indices))
+for (i in 1:length(column_indices)) 
+{
+  column_index <- column_indices[i]
+  medians[i] <- median(nyc[, column_index], na.rm = TRUE)
+}
+print(medians)
+# Used GPT to help with this code, I tried a simpler for loop but it did not work.
+```
+
+
+>- Make a for loop to find the standard deviation (hint sd() ) of CHOLESTEROLTOTAL, GLUCOSESI, CREATININESI, AND CREATININE
+
+```{r}
+column_indices <- c(16:19)
+std_devs <- numeric(length(column_indices))
+for (i in 1:length(column_indices)) 
+{
+  column_index <- column_indices[i]
+  std_devs[i] <- sd(nyc[, column_index], na.rm = TRUE)
+}
+print(std_devs)
+```
+
+
+>- Bonus/Challenge Create a vector in which to put the standard deviations 
+
+```{r}
+# I did this above I believe
+```
+
+
+>- Use ifelse to create a new variable of high and normal A1C dichotomizing with 7 as a threshold for high levels
+
+```{r}
+
+```
+
+
+>- Subset to only have females (gender == "female")
+
+```{r}
+
+```
+
+
+>- Create a subset of males and find the median total cholesterol level
+
+```{r}
+
+```
+
+
+>- Try to create a summary of the mean A1C using two factors, GENDER and DX_DBTS
+
+```{r}
+
+```
+
+Find the class of the first three columns of data. What are they?
+
+```{r}
+
+```
+
