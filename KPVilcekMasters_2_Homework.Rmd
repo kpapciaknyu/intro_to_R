@@ -45,7 +45,6 @@ class(nyc['DX_DBTS'])
 nyc_new<-data.frame(nyc$KEY,nyc$GENDER,nyc$SPAGE,nyc$AGEGROUP)
 class(nyc_new)
 # It would still be a data frame because there is still a rectangular array of numbers with rows and columns, only difference is this matrix has less columns than the original "nyc" and only consist of "integer" columns.
-
 ```
 
 
@@ -56,14 +55,11 @@ WannaMatrix <- nyc[5:10, 6:9]
 WannaMatrix <- as.matrix(WannaMatrix,nrow = 6, ncol = 4)
 
 print(WannaMatrix[3,3])
-
-
 ```
 
 
 
 >- What happens if instead we made a vector vec2 <- c(3,9,4,7,8) and multiply it by WannaMatrix, what is the third row, third column value? What is going on? 
-
 ```{r}
 vec2 <- c(3,9,4,7,8)
 vec2*WannaMatrix
@@ -89,7 +85,6 @@ apply(nyc[c('CADMIUM', 'LEAD','CHOLESTEROLTOTAL', 'GLUCOSESI', 'CREATININESI','C
 
 
 >- Do the same using sapply()
-
 ```{r}
 sapply(nyc[c('CADMIUM', 'LEAD','CHOLESTEROLTOTAL', 'GLUCOSESI', 'CREATININESI','CREATININE')], median, na.rm = T)
 ```
@@ -106,7 +101,6 @@ for (i in 1:length(column_indices))
   medians[i] <- median(nyc[, column_index], na.rm = TRUE)
 }
 print(medians)
-# Used GPT to help with this code, I tried a simpler for loop but it did not work.
 ```
 
 
@@ -134,33 +128,42 @@ print(std_devs)
 >- Use ifelse to create a new variable of high and normal A1C dichotomizing with 7 as a threshold for high levels
 
 ```{r}
-
+nyc$A1C_Level <- ifelse(nyc$A1C >= 7, "High", "Normal")
+head(nyc[, c("A1C", "A1C_Level")])
 ```
 
 
 >- Subset to only have females (gender == "female")
 
 ```{r}
-
+nyc_females <- subset(nyc, GENDER == "FEMALE")
+# Alternative if the data uses codes instead of labels
+nyc_females <- subset(nyc, GENDER == 2)  # Assuming 2 represents female
 ```
 
 
 >- Create a subset of males and find the median total cholesterol level
 
 ```{r}
-
+nyc_males <- subset(nyc, GENDER == "MALE")
+# Alternative if the data uses codes instead of labels
+nyc_males <- subset(nyc, GENDER == 1)  # Assuming 1 represents male
+median_male_cholesterol <- median(nyc_males$CHOLESTEROLTOTAL, na.rm = TRUE)
+print(median_male_cholesterol)
 ```
 
 
 >- Try to create a summary of the mean A1C using two factors, GENDER and DX_DBTS
 
 ```{r}
-
+summary_a1c <- aggregate(A1C ~ GENDER + DX_DBTS, data = nyc, FUN = mean, na.rm = TRUE)
+print(summary_a1c)
 ```
 
 Find the class of the first three columns of data. What are they?
 
 ```{r}
-
+column_classes <- sapply(nyc[, 1:3], class)
+print(column_classes)
 ```
 

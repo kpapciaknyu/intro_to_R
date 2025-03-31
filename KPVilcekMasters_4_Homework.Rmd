@@ -14,7 +14,7 @@ Use the Synthetic Mass Data:
 1. Make a subset of Patient data to have patient ID, sex/gender, race and ethnicity. 
 
 ```{r}
-patients <- read.csv("/Users/kpapciak/Desktop/Katie Programming Folder/patients.csv") #couldnt pull from permalink for some reason so I downloaded file
+patients <- read.csv("~/Downloads/patients.csv") #couldnt pull from permalink for some reason so I downloaded file
 patients_subset <- cbind.data.frame(patients$Id, patients$GENDER, patients$RACE, patients$ETHNICITY)
 ```
 
@@ -22,7 +22,7 @@ patients_subset <- cbind.data.frame(patients$Id, patients$GENDER, patients$RACE,
 
 ```{r}
 library(dplyr)
-observations <- read.csv("/Users/kpapciak/Desktop/Katie Programming Folder/observations.csv")
+observations <- read.csv("~/Downloads/observations.csv")
 obs_filtered <- observations %>% filter(DESCRIPTION %in% c("Body Height", "Body Weight") & DATE >= as.Date("2015-01-01"))
 most_recent_obs <- obs_filtered %>% group_by(PATIENT, DESCRIPTION) %>% filter(DATE == max(DATE)) %>% ungroup()
 
@@ -45,7 +45,29 @@ merged_subset<-merge(patients_subset, most_recent_obs_wide, all = T)
 5. Calculate BMI into a new column. The equation is weight (kg)/height ^2 (m)
 
 ```{r}
-merged_subset$BMI <- merged_subset$`Body Weight`/(merged_subset$`Body Height`^ 2)
+# 1. First, examine the data types
+str(merged_subset$`Body Weight`)
+str(merged_subset$`Body Height`)
+
+# 2. Convert columns to numeric, handling any non-numeric values
+merged_subset$`Body Weight` <- as.numeric(as.character(merged_subset$`Body Weight`))
+merged_subset$`Body Height` <- as.numeric(as.character(merged_subset$`Body Height`))
+
+# 3. Check for NA values created during conversion
+sum(is.na(merged_subset$`Body Weight`))
+sum(is.na(merged_subset$`Body Height`))
+
+# 4. Convert height to meters (assuming it's in cm)
+merged_subset$`Body Height in m` <- merged_subset$`Body Height` / 100
+
+# 5. Calculate BMI only for rows where both weight and height are available
+merged_subset$BMI <- NA  # Initialize with NA
+valid_rows <- !is.na(merged_subset$`Body Weight`) & !is.na(merged_subset$`Body Height in m`)
+merged_subset$BMI[valid_rows] <- merged_subset$`Body Weight`[valid_rows] / 
+                                 (merged_subset$`Body Height in m`[valid_rows]^2)
+
+# 6. Check the results
+head(merged_subset[, c("Body Weight", "Body Height", "Body Height in m", "BMI")])
 ```
 
 

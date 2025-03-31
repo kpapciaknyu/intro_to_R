@@ -12,10 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## R Homework 1
 
 ```{r, echo = TRUE}
-
 nyc <- read.csv("https://raw.githubusercontent.com/fredlapolla/RVilcekMaster23/master/NYC_HANES_DIAB.csv")
 nycdf<-data.frame(nyc)
-
 ```
 
 >- Create a list of numbers 1 to 100 and name this list FirstHundred
@@ -56,7 +54,6 @@ install.packages("ggplot2")
 library("ggplot2")
 install.packages("dplyr")
 library("dplyr")
-
 ```
 
 
@@ -66,7 +63,6 @@ library("dplyr")
 # A directory is the organization and hierarchy of files stored on your computer. A working directory in R is the current location where R saves and pulls files from your computer. 
 getwd()
 ```
-
 
 >- How does one read in a CSV file of data into R?
 

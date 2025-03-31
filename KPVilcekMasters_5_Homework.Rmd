@@ -66,29 +66,87 @@ ggplot(nyc, aes(x = factor(DX_DBTS), y = A1C)) +
 >- Use ggplot2 to make a scatter plot of A1C by glucose levels.
 
 ```{r}
-
+ggplot(nyc, aes(x = GLUCOSE, y = A1C)) +
+  geom_point() +
+  labs(title = "A1C vs Glucose Levels",
+       x = "Glucose",
+       y = "A1C") +
+  theme_minimal()
 ```
 
 
 >- Add coloration by gender for the above scatter plot and change the background theme to the minimal option. Change the X axis to label numbers by increments of 3. 
 
 ```{r}
-
+ggplot(nyc, aes(x = GLUCOSE, y = A1C, color = factor(GENDER))) +
+  geom_point() +
+  labs(title = "A1C vs Glucose Levels by Gender",
+       x = "Glucose",
+       y = "A1C",
+       color = "Gender") +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(min(nyc$GLUCOSE, na.rm = TRUE), 
+                                  max(nyc$GLUCOSE, na.rm = TRUE), 
+                                  by = 3))
 ```
 
 >- Create a GGPlot chart of Lead vs. Cotinine and show two different themes for the background. 
 
 ```{r}
+# Theme 1: Minimal
+plot1 <- ggplot(nyc, aes(x = COTININE, y = LEAD)) +
+  geom_point() +
+  labs(title = "Lead vs Cotinine - Minimal Theme",
+       x = "Cotinine",
+       y = "Lead") +
+  theme_minimal()
 
+# Theme 2: Classic
+plot2 <- ggplot(nyc, aes(x = COTININE, y = LEAD)) +
+  geom_point() +
+  labs(title = "Lead vs Cotinine - Classic Theme",
+       x = "Cotinine",
+       y = "Lead") +
+  theme_classic()
+
+# Display both plots
+print(plot1)
+print(plot2)
 ```
 
 >- Make bar charts of mean Glucose level by diabetes diagnosis. Add error bars.
 
 ```{r}
+# First calculate mean and standard error for each group
+library(dplyr)
+glucose_summary <- nyc %>%
+  group_by(DX_DBTS) %>%
+  summarise(
+    mean_glucose = mean(GLUCOSE, na.rm = TRUE),
+    se_glucose = sd(GLUCOSE, na.rm = TRUE)/sqrt(sum(!is.na(GLUCOSE))),
+    .groups = 'drop'
+  )
 
+# Create the bar chart with error bars
+ggplot(glucose_summary, aes(x = factor(DX_DBTS), y = mean_glucose)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  geom_errorbar(aes(ymin = mean_glucose - se_glucose, 
+                    ymax = mean_glucose + se_glucose), 
+                width = 0.2) +
+  labs(title = "Mean Glucose Level by Diabetes Diagnosis",
+       x = "Diabetes Diagnosis",
+       y = "Mean Glucose Level") +
+  theme_minimal()
 ```
 
 
 >- Where could you go to look up other Geom shapes for different types of charts?
+```{r}
+# Answer: You can look up other Geom shapes in:
+# 1. The ggplot2 documentation: https://ggplot2.tidyverse.org/reference/
+# 2. The ggplot2 cheatsheet: https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf
+# 3. The R Graphics Cookbook: https://r-graphics.org/
+# 4. The ggplot2 official website: https://ggplot2.tidyverse.org
+```
 
 
